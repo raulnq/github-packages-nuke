@@ -46,7 +46,7 @@ class Build : NukeBuild
             .SetProject(RootDirectory / "MyLib")
             .SetOutputDirectory(PackagesDirectory)
             .SetPackageProjectUrl($"https://github.com/{GitHubUser}/github-packages-nuke")
-            .SetVersion(GitVersion.AssemblySemFileVer)
+            .SetVersion(GitVersion.SemVer)
             .SetPackageId("MyLib")
             .SetAuthors("raulnq")
             .SetDescription("MyLib nuget package")
@@ -77,9 +77,6 @@ class Build : NukeBuild
         {
             try
             {
-                Log.Information($"token {GitHubToken}");
-                Log.Information($"user {GitHubUser}");
-                Log.Information($"instance {GitHubActions.Instance?.Token}");
                 DotNetNuGetAddSource(s => s
                .SetName("github")
                .SetUsername(GitHubUser)
