@@ -11,9 +11,9 @@ using System.Numerics;
 
 [GitHubActions(
     "Push",
-    GitHubActionsImage.UbuntuLatest, ImportSecrets = new[] { "NUGET_TOKEN" },
-    OnPushBranches = new[] { "main" },
-    InvokedTargets = new[] { nameof(Push) })]
+    GitHubActionsImage.UbuntuLatest,
+    On = new[] { GitHubActionsTrigger.WorkflowDispatch },
+    InvokedTargets = new[] { nameof(Push) }, EnableGitHubToken = true)]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
