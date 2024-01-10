@@ -68,7 +68,7 @@ class Build : NukeBuild
         {
             DotNetNuGetPush(s => s
             .SetTargetPath(PackagesDirectory / "*.nupkg")
-            .SetApiKey(GitHubToken)
+            .SetApiKey("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")
             .SetSource("github"));
         });
 
@@ -89,10 +89,12 @@ class Build : NukeBuild
                 Log.Information($"token {GitHubToken}");
                 Log.Information($"user {GitHubUser}");
                 Log.Information($"instance {GitHubActions.Instance?.Token}");
+                Log.Information($"equal {GitHubActions.Instance?.Token == GitHubToken}");
+
                 DotNetNuGetAddSource(s => s
                .SetName("github")
                .SetUsername(GitHubUser)
-               .SetPassword(GitHubToken)
+               .SetPassword("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")
                .EnableStorePasswordInClearText()
                .SetSource($"https://nuget.pkg.github.com/{GitHubUser}/index.json"));
             }
