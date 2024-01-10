@@ -4,10 +4,8 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.NuGet;
 using Serilog;
-using static Nuke.Common.Tools.GitVersion.GitVersionTasks;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.CI.GitHubActions;
-using System.Numerics;
 
 [GitHubActions(
     "Push",
@@ -27,14 +25,8 @@ class Build : NukeBuild
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
-    private string Version;
-
-    Target GetVersion => _ => _
-        .Executes(() =>
-        {
-            var (result, _) = GitVersion();
-            Version = result.FullSemVer;
-        });
+    [GitVersion]
+    readonly GitVersion GitVersion;
 
     AbsolutePath PackagesDirectory => RootDirectory / "packages";
 
@@ -47,7 +39,6 @@ class Build : NukeBuild
     Target Pack => _ => _
         .DependsOn(Clean)
         .DependsOn(AddSource)
-        .DependsOn(GetVersion)
         .Produces(PackagesDirectory / "*.nupkg")
         .Executes(() =>
         {
@@ -55,7 +46,7 @@ class Build : NukeBuild
             .SetProject(RootDirectory / "MyLib")
             .SetOutputDirectory(PackagesDirectory)
             .SetPackageProjectUrl($"https://github.com/{GitHubUser}/github-packages-nuke")
-            .SetVersion(Version)
+            .SetVersion(GitVersion.AssemblySemFileVer)
             .SetPackageId("MyLib")
             .SetAuthors("raulnq")
             .SetDescription("MyLib nuget package")
