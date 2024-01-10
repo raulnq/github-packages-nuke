@@ -86,6 +86,9 @@ class Build : NukeBuild
         {
             try
             {
+                Log.Information($"token {GitHubToken}");
+                Log.Information($"user {GitHubUser}");
+                Log.Information($"instance {GitHubActions.Instance?.Token}");
                 DotNetNuGetAddSource(s => s
                .SetName("github")
                .SetUsername(GitHubUser)
