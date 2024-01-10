@@ -32,7 +32,7 @@ class Build : NukeBuild
     Target GetVersion => _ => _
         .Executes(() =>
         {
-            var (result, _) = GitVersion();
+            var (result, _) = GitVersion(settings => settings.SetFramework("net6.0"));
             Version = result.FullSemVer;
         });
 
