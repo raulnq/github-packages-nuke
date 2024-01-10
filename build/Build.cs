@@ -11,9 +11,9 @@ using System.Numerics;
 
 [GitHubActions(
     "Push",
-    GitHubActionsImage.UbuntuLatest,
+    GitHubActionsImage.UbuntuLatest, ImportSecrets = new[] { "NUGET_TOKEN" },
     OnPushBranches = new[] { "main" },
-    InvokedTargets = new[] { nameof(Push) }, EnableGitHubToken = true)]
+    InvokedTargets = new[] { nameof(Push) })]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
@@ -68,7 +68,7 @@ class Build : NukeBuild
         {
             DotNetNuGetPush(s => s
             .SetTargetPath(PackagesDirectory / "*.nupkg")
-            .SetApiKey("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")
+            .SetApiKey(NugetToken)
             .SetSource("github"));
         });
 
@@ -76,25 +76,23 @@ class Build : NukeBuild
     readonly string GitHubUser = GitHubActions.Instance?.RepositoryOwner;
 
     [Parameter()]
-    //[Secret] 
-    readonly string GitHubToken = GitHubActions.Instance?.Token;
+    [Secret] 
+    readonly string NugetToken;
 
     Target AddSource => _ => _      
         .Requires(() => GitHubUser)
-        .Requires(() => GitHubToken)
+        .Requires(() => NugetToken)
         .Executes(() =>
         {
             try
             {
-                Log.Information($"token {GitHubToken}");
+                Log.Information($"token {NugetToken}");
                 Log.Information($"user {GitHubUser}");
                 Log.Information($"instance {GitHubActions.Instance?.Token}");
-                Log.Information($"equal {GitHubActions.Instance?.Token == GitHubToken}");
-
                 DotNetNuGetAddSource(s => s
                .SetName("github")
                .SetUsername(GitHubUser)
-               .SetPassword("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")
+               .SetPassword(NugetToken)
                .EnableStorePasswordInClearText()
                .SetSource($"https://nuget.pkg.github.com/{GitHubUser}/index.json"));
             }
