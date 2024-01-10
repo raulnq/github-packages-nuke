@@ -11,7 +11,7 @@ using Nuke.Common.CI.GitHubActions;
     "Push",
     GitHubActionsImage.UbuntuLatest,
     On = new[] { GitHubActionsTrigger.WorkflowDispatch },
-    InvokedTargets = new[] { nameof(Push) }, EnableGitHubToken = true)]
+    InvokedTargets = new[] { nameof(Push) }, EnableGitHubToken = true, AutoGenerate = false)]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
@@ -39,7 +39,6 @@ class Build : NukeBuild
     Target Pack => _ => _
         .DependsOn(Clean)
         .DependsOn(AddSource)
-        .Produces(PackagesDirectory / "*.nupkg")
         .Executes(() =>
         {
             DotNetPack(s => s
@@ -48,7 +47,7 @@ class Build : NukeBuild
             .SetPackageProjectUrl($"https://github.com/{GitHubUser}/github-packages-nuke")
             .SetVersion(GitVersion.SemVer)
             .SetPackageId("MyLib")
-            .SetAuthors("raulnq")
+            .SetAuthors($"{GitHubUser}")
             .SetDescription("MyLib nuget package")
             .SetConfiguration(Configuration));
         });
