@@ -76,7 +76,7 @@ class Build : NukeBuild
     readonly string GitHubUser = GitHubActions.Instance?.RepositoryOwner;
 
     [Parameter()]
-    [Secret] 
+    //[Secret] 
     readonly string GitHubToken;
 
     Target AddSource => _ => _      
