@@ -68,7 +68,7 @@ class Build : NukeBuild
         {
             DotNetNuGetPush(s => s
             .SetTargetPath(PackagesDirectory / "*.nupkg")
-            .SetApiKey(NugetToken)
+            .SetApiKey(GitHubToken)
             .SetSource("github"));
         });
 
@@ -77,22 +77,22 @@ class Build : NukeBuild
 
     [Parameter()]
     [Secret] 
-    readonly string NugetToken;
+    readonly string GitHubToken;
 
     Target AddSource => _ => _      
         .Requires(() => GitHubUser)
-        .Requires(() => NugetToken)
+        .Requires(() => GitHubToken)
         .Executes(() =>
         {
             try
             {
-                Log.Information($"token {NugetToken}");
+                Log.Information($"token {GitHubToken}");
                 Log.Information($"user {GitHubUser}");
                 Log.Information($"instance {GitHubActions.Instance?.Token}");
                 DotNetNuGetAddSource(s => s
                .SetName("github")
                .SetUsername(GitHubUser)
-               .SetPassword(NugetToken)
+               .SetPassword(GitHubToken)
                .EnableStorePasswordInClearText()
                .SetSource($"https://nuget.pkg.github.com/{GitHubUser}/index.json"));
             }
