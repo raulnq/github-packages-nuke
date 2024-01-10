@@ -32,7 +32,7 @@ class Build : NukeBuild
     Target GetVersion => _ => _
         .Executes(() =>
         {
-            var (result, _) = GitVersion(settings => settings.SetFramework("net6.0"));
+            var (result, _) = GitVersion();
             Version = result.FullSemVer;
         });
 
@@ -90,6 +90,7 @@ class Build : NukeBuild
                .SetName("github")
                .SetUsername(GitHubUser)
                .SetPassword(GitHubToken)
+               .EnableStorePasswordInClearText()
                .SetSource($"https://nuget.pkg.github.com/{GitHubUser}/index.json"));
             }
             catch
